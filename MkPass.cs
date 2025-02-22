@@ -4,7 +4,7 @@ using System.Security.Cryptography; // For RandomNumberGenerator
 
 namespace MkPass;
 static class App {
-  const string version = "mkpass 2.0.1";
+  const string version = "mkpass 2.1.0";
   const string license = """
     Copyright (c) 2022,2023 viraltaco_ (Original Work in C++) MIT License.
     Copyright (c) 2025 viraltaco_ (C# Port) All rights reserved.
@@ -43,9 +43,12 @@ static class App {
         Console.WriteLine(version);
         Console.Write(opt switch { "--license" => license, "--version" => "", _ => usage });
         return;
-      } 
-      if (opt == "off") idx = charset.Length - 1;
-      len = uint.Parse((args.Length > 1) ? args[1] : opt);
+      } else if (opt.StartsWith('o')) {
+        if (opt == "off") idx = charset.Length - 1;
+        if (args.Length > 1) len = uint.Parse(args[1]);
+      } else {
+        len = uint.Parse(opt);
+      }
     }
 
     using (var rng = RandomNumberGenerator.Create()) {
