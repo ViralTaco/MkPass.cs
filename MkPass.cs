@@ -4,12 +4,12 @@ using System.Security.Cryptography; // For RandomNumberGenerator
 
 namespace MkPass;
 static class App {
-  const string version = "mkpass 2.1.0";
-  const string license = """
+  const string kVersion = "mkpass 2.1.1";
+  const string kLicense = """
     Copyright (c) 2022,2023 viraltaco_ (Original Work in C++) MIT License.
     Copyright (c) 2025 viraltaco_ (C# Port) All rights reserved.
     """;
-  const string usage = """
+  const string kUsage = """
     mkpass generates 'random' passwords.
     usage:
     mkpass [OPT] symbols length
@@ -29,22 +29,22 @@ static class App {
     mkpass --help  Prints everything you just read.
     """;
 
-  const string charset = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-  const string symbols = "!\\#$%&'( )*+,-./:;<=>?@[]^_{|}~\"";
-  const string alphabet = charset + symbols;
+  const string kAlphNum = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+  const string kSymbols = "!\\#$%&'( )*+,-./:;<=>?@[]^_{|}~\"";
+  const string kCharset = kAlphNum + kSymbols;
 
   public static void Main(string[] args) {
-    var idx = alphabet.Length - 1;
+    var idx = kCharset.Length - 1;
     var len = 32u;
 
     if (args.Length > 0) {
       var opt = args[0];
       if (opt.StartsWith('-')) {
-        Console.WriteLine(version);
-        Console.Write(opt switch { "--license" => license, "--version" => "", _ => usage });
+        Console.WriteLine(kVersion);
+        Console.Write(opt switch { "--license" => kLicense, "--version" => "", _ => kUsage });
         return;
       } else if (opt.StartsWith('o')) {
-        if (opt == "off") idx = charset.Length - 1;
+        if (opt == "off") idx = kAlphNum.Length - 1;
         if (args.Length > 1) len = uint.Parse(args[1]);
       } else {
         len = uint.Parse(opt);
@@ -54,7 +54,7 @@ static class App {
     using (var rng = RandomNumberGenerator.Create()) {
       var buf = new byte[len];
       rng.GetBytes(buf); // Fill the buffer with random bytes
-      foreach (var b in buf) Console.Write(alphabet[b % idx]);
+      foreach (var b in buf) Console.Write(kCharset[b % idx]);
     }
   } // Main()
-} // class App
+}
