@@ -4,7 +4,7 @@ using System.Security.Cryptography; // For RandomNumberGenerator
 
 namespace MkPass;
 static class App {
-  const string kVersion = "mkpass 2.1.1";
+  const string kVersion = "mkpass 2.2.0";
   const string kLicense = """
     Copyright (c) 2022,2023 viraltaco_ (Original Work in C++) MIT License.
     Copyright (c) 2025 viraltaco_ (C# Port) All rights reserved.
@@ -35,7 +35,7 @@ static class App {
 
   public static void Main(string[] args) {
     var idx = kCharset.Length - 1;
-    var len = 32u;
+    var len = 32L;
 
     if (args.Length > 0) {
       var opt = args[0];
@@ -45,16 +45,13 @@ static class App {
         return;
       } else if (opt.StartsWith('o')) {
         if (opt == "off") idx = kAlphNum.Length - 1;
-        if (args.Length > 1) len = uint.Parse(args[1]);
+        if (args.Length > 1) len = long.Parse(args[1]);
       } else {
-        len = uint.Parse(opt);
+        len = long.Parse(opt);
       }
     }
-
-    using (var rng = RandomNumberGenerator.Create()) {
-      var buf = new byte[len];
-      rng.GetBytes(buf); // Fill the buffer with random bytes
-      foreach (var b in buf) Console.Write(kCharset[b % idx]);
-    }
-  } // Main()
+    
+    while (len-- > 0)
+      Console.Write(kCharset[RandomNumberGenerator.GetInt32(idx)]);
+  }
 }
